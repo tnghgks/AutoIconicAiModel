@@ -3,8 +3,8 @@ import torch, torch.nn as nn
 # ─────────── 1. 하이퍼파라미터 ───────────
 BATCH      = 64
 D_MODEL    = 256
-N_HEAD     = 8
-N_LAYERS   = 4
+N_HEAD     = 4
+N_LAYERS   = 3
 DEVICE     = "cuda" if torch.cuda.is_available() else "cpu"
 
 class TextToSVG(nn.Module):
@@ -13,7 +13,7 @@ class TextToSVG(nn.Module):
         self.txt_emb = nn.Embedding(VOCAB_TEXT, D_MODEL, padding_idx=0)
         self.svg_emb = nn.Embedding(VOCAB_SVG,  D_MODEL, padding_idx=0)
         self.tf = nn.Transformer(
-            dropout=0.1,
+            dropout=0.3,
             d_model=D_MODEL, nhead=N_HEAD,
             num_encoder_layers=N_LAYERS,
             num_decoder_layers=N_LAYERS,
