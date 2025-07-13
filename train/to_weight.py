@@ -2,7 +2,7 @@ from collections import Counter
 import torch, os, json
 from config import RESULT_DIR, DEVICE
 from train.svg_dataset import TextToSVGDataset
-print (f"Using device: {RESULT_DIR}")
+
 TRAIN_JSONL = os.path.join(RESULT_DIR, "train.jsonl")
 TOKEN2ID_JSON    =  os.path.join(RESULT_DIR, "token2id.json")
 
@@ -16,7 +16,6 @@ def to_weight():
     for row in train_set.rows:           # raw JSON 딕셔너리
         freq.update(row["svg_ids"])      # 리스트 그대로 카운트
 
-
     vocab_size = len(token2id)
     weight = torch.ones(vocab_size, dtype=torch.float32)
 
@@ -28,5 +27,4 @@ def to_weight():
         if cmd in token2id:
             weight[token2id[cmd]] = 4.0
 
-    weight[token2id["<eos>"]] = 5.0  
     return weight.to(DEVICE)
