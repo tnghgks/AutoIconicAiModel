@@ -51,8 +51,16 @@ def infer(prompt: str):
     return svg_path
 
 def decode_svg_ids(tokens: list[str]) -> str:
-    """PATH_START / PATH_END 제외한 토큰들을 문자열로 복원"""
-    return " ".join([t for t in tokens if t not in ("PATH_START", "PATH_END")])
+    """
+    의미 단위 토큰 리스트 → SVG path 문자열
+    예: ["M_3_3", "L_4_4", "Z"] → "M 3 3 L 4 4 Z"
+    """
+    d_tokens = []
+    for tok in tokens:
+        if tok in {"PATH_START", "PATH_END", "<bos>", "<eos>", "<pad>", "<unk>"}:
+            continue
+        d_tokens.append(tok.replace("_", " "))
+    return " ".join(d_tokens)
 
 if __name__ == "__main__":
     while True:
@@ -62,7 +70,7 @@ if __name__ == "__main__":
         svg_d = infer(prompt.strip())
         svg_xml = (
             '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" '
-            'stroke="black" fill="none" stroke-width="2">'
+            'stroke="black" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
             f'<path d="{svg_d}"/></svg>'
         )
         print(f"🖋 {prompt.strip()} to Svg:\n{svg_xml}")   
