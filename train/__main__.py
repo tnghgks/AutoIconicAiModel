@@ -12,10 +12,8 @@ from config import DEVICE
 # ─────────── 1. 하이퍼파라미터 ───────────
 BATCH           = 64
 D_MODEL         = 256
-N_HEAD          = 8
-N_LAYERS        = 4
 LR              = 1e-4
-EPOCHS          = 100   
+EPOCHS          = 1000   
 MAX_LEN         = 512
 SP_MODEL        = os.path.join(RESULT_DIR, "text_bpe.model")
 TRAIN_JSON      = os.path.join(RESULT_DIR, "train.jsonl")
