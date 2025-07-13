@@ -13,8 +13,8 @@ def convert_and_split_data(
     sp,
     output_jsonl="./results/train_pairs.jsonl",
     split_dir="./results",
-    train_ratio=0.8,
-    val_ratio=0.1
+    train_ratio=1,
+    val_ratio=0.2
 ):
     svg_bos = token2id["<bos>"]
     svg_eos = token2id["<eos>"]
@@ -51,14 +51,15 @@ def convert_and_split_data(
     # Split
     n = len(processed)
     train_end = int(train_ratio * n)
+    val_start = int((0.8) * n)
     val_end = int((train_ratio + val_ratio) * n)
 
     os.makedirs(split_dir, exist_ok=True)
     with open(os.path.join(split_dir, "train.jsonl"), "w", encoding="utf-8") as f:
         f.write("\n".join(json.dumps(r, ensure_ascii=False) for r in processed[:train_end]))
     with open(os.path.join(split_dir, "val.jsonl"), "w", encoding="utf-8") as f:
-        f.write("\n".join(json.dumps(r, ensure_ascii=False) for r in processed[train_end:val_end]))
-    with open(os.path.join(split_dir, "test.jsonl"), "w", encoding="utf-8") as f:
-        f.write("\n".join(json.dumps(r, ensure_ascii=False) for r in processed[val_end:]))
+        f.write("\n".join(json.dumps(r, ensure_ascii=False) for r in processed[val_start:val_end]))
+    # with open(os.path.join(split_dir, "test.jsonl"), "w", encoding="utf-8") as f:
+    #     f.write("\n".join(json.dumps(r, ensure_ascii=False) for r in processed[val_end:]))
 
     print(f"✔ 총 {n}개 샘플 중 → train/val/test = {train_end}/{val_end-train_end}/{n-val_end}")
