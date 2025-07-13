@@ -4,7 +4,7 @@ from train.svg_dataset import TextToSVGDataset, collate_fn
 from torch.utils.data import Dataset
 import sentencepiece as spm
 import json, torch, os
-from train.text_to_svg import TextToSVG
+from train.model import TextToSVG
 from config import RESULT_DIR
 from train.to_weight import to_weight
 from config import DEVICE

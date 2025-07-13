@@ -2,7 +2,7 @@ import torch
 import sentencepiece as spm
 import json
 import os
-from train.text_to_svg import TextToSVG
+from train.model import TextToSVG
 
 BASE_DIR        = os.path.dirname(os.path.abspath(__file__))
 RESULT_DIR      = os.path.join(BASE_DIR, "results")
