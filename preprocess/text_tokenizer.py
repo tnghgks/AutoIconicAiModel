@@ -22,7 +22,7 @@ def text_tokenizer():
     spm.SentencePieceTrainer.train(
         input=PROMPT_PATH,
         model_prefix=TEXT_BPE_PATH,
-        vocab_size=800,
+        vocab_size=1000,
         model_type='bpe',
         bos_id=0, eos_id=1, unk_id=2, pad_id=3,
         user_defined_symbols=["icon", "button", "symbol"]
