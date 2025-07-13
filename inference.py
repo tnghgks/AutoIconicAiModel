@@ -6,8 +6,7 @@ from train.model import TextToSVG
 
 BASE_DIR        = os.path.dirname(os.path.abspath(__file__))
 RESULT_DIR      = os.path.join(BASE_DIR, "results")
-SAVE_PATH = os.path.join(RESULT_DIR, "model", "model.pt")
-MODEL_PATH = os.path.join(RESULT_DIR, "model", "model.pt")
+MODEL_PATH = os.path.join(RESULT_DIR, "model", "best_model.pt")
 
 TOKEN2ID_JSON   = os.path.join(RESULT_DIR, "token2id.json")
 SP_MODEL        = os.path.join(RESULT_DIR, "text_bpe.model")
@@ -27,8 +26,8 @@ PAD_ID = token2id["<pad>"]
 UNK_ID = token2id["<unk>"]
 
 model = TextToSVG(VOCAB_TEXT, VOCAB_SVG).to(DEVICE)
-checkpoint = torch.load(MODEL_PATH, map_location=DEVICE)
-model.load_state_dict(checkpoint["model_state_dict"])
+state_dict = torch.load(MODEL_PATH, map_location=DEVICE)
+model.load_state_dict(state_dict)
 model.eval()
 
 @torch.no_grad()
