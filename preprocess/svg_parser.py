@@ -1,5 +1,3 @@
-# preprocess/svg_parser.py
-
 import re
 from xml.etree import ElementTree as ET
 
@@ -12,13 +10,17 @@ def path_to_tokens(d_str: str) -> list[str]:
     tokens = []
     matches = TOKEN_RE.findall(d_str)
     i = 0
+    current_cmd = None
 
     while i < len(matches):
-        if not re.fullmatch(r'[MmLlHhVvCcSsQqTtAaZz]', matches[i]):
+        if re.fullmatch(r'[MmLlHhVvCcSsQqTtAaZz]', matches[i]):
+            current_cmd = matches[i]
+            i += 1
+        elif current_cmd is None:
             i += 1
             continue
 
-        cmd = matches[i]
+        cmd = current_cmd
         n_args = {
             'M': 2, 'L': 2, 'H': 1, 'V': 1, 'C': 6, 'S': 4,
             'Q': 4, 'T': 2, 'A': 7, 'Z': 0,
@@ -26,18 +28,25 @@ def path_to_tokens(d_str: str) -> list[str]:
             'q': 4, 't': 2, 'a': 7, 'z': 0,
         }.get(cmd, 0)
 
-        i += 1
-        while i + n_args - 1 < len(matches) and not re.fullmatch(r'[MmLlHhVvCcSsQqTtAaZz]', matches[i]):
-            args = matches[i:i+n_args]
-            if len(args) < n_args:
-                break
-            if n_args == 0:
-                tokens.append(cmd)
-                break
-            token = f"{cmd}_{'_'.join(args)}"
-            tokens.append(token)
-            i += n_args
+        if n_args == 0:
+            tokens.append(cmd)
+            current_cmd = None
+            continue
+
+        if i + n_args > len(matches):
+            break
+
+        args = matches[i:i+n_args]
+        if any(re.fullmatch(r'[MmLlHhVvCcSsQqTtAaZz]', a) for a in args):
+            i += 1
+            continue
+
+        token = f"{cmd}_{'_'.join(args)}"
+        tokens.append(token)
+        i += n_args
+
     return ["PATH_START"] + tokens + ["PATH_END"]
+
 
 def svg_to_path_list(svg_text: str) -> list[str]:
     root = ET.fromstring(svg_text)
