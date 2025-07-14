@@ -2,10 +2,21 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from inference import infer  # 모델의 추론 함수
-from train.model import TextToSVG  # 너가 만든 모델 정의 모듈
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
+origins = [
+    "*"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,            # 허용할 origin 목록
+    allow_credentials=False,           # 쿠키/인증정보 허용 여부
+    allow_methods=["*"],              # 허용할 HTTP 메서드
+    allow_headers=["*"],              # 허용할 헤더
+)
 class PromptRequest(BaseModel):
     prompt: str
 
